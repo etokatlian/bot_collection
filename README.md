@@ -1,14 +1,21 @@
-# Welcome to your CDK TypeScript project
+# Github_bot
 
-This is a blank project for CDK development with TypeScript.
+A python bot that takes in a list of github users and emails me every day at 9am with a list of their commits and other activity. Deploys to AWS Lambda using CDK.
+<br/>
+<br/>
 
-The `cdk.json` file tells the CDK Toolkit how to execute your app.
+### To use this bot
 
-## Useful commands
+1. Create lambda/users.py and add the following code:
 
-* `npm run build`   compile typescript to js
-* `npm run watch`   watch for changes and compile
-* `npm run test`    perform the jest unit tests
-* `cdk deploy`      deploy this stack to your default AWS account/region
-* `cdk diff`        compare deployed stack with current state
-* `cdk synth`       emits the synthesized CloudFormation template
+```python
+urls = ["https://github.com/etokatlian"]       
+
+name_map = {"etokatlian": "Eric Tokatlian"}
+
+```
+2. Add as many users as you want to the urls list and the name_map dictionary. The name_map dictionary is used to map the github username to a name that you want to be displayed in the email.
+
+3. Next, on lines 101, 102, and 103 of lambda/github_bot.py, add your email and password. If you're using gmail, you'll need to enable less secure apps in your account settings.
+
+4. Run `npx cdk deploy` to deploy the bot to AWS Lambda.
