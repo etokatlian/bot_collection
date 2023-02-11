@@ -1,8 +1,8 @@
 {
-  "name": "github_bot",
+  "name": "bot_collection",
   "version": "0.1.0",
   "bin": {
-    "github_bot": "bin/github_bot.js"
+    "bot_collection": "bin/bot_collection.js"
   },
   "scripts": {
     "build": "tsc",
