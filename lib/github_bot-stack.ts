@@ -1,3 +1,4 @@
+require('dotenv').config();
 import * as cdk from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
@@ -25,10 +26,14 @@ export class GithubBotStack extends cdk.Stack {
       handler: 'github_bot.lambda_handler',
       memorySize: 256,
       timeout: cdk.Duration.seconds(30),
+      environment: {
+        EMAIL: process.env.EMAIL || '',
+        PASSWORD: process.env.PASSWORD || '',
+      },
     });
 
     new events.Rule(this, 'GithubBotRule', {
-      schedule: events.Schedule.cron({ hour: '17', minute: '0' }),
+      schedule: events.Schedule.cron({ hour: '16', minute: '0' }),
       targets: [new targets.LambdaFunction(GithubBotLambda)],
     });
   }

@@ -1,3 +1,4 @@
+import os
 import smtplib
 import ssl
 from email.mime.text import MIMEText
@@ -98,9 +99,9 @@ async def run():
 
     generated_html = MIMEText(html_string, "html")
 
-    sender_email = ""
-    receiver_emails = [""]
-    password = ''
+    sender_email = os.environ['EMAIL']
+    receiver_emails = [os.environ['EMAIL']]
+    password = os.environ['PASSWORD']
     message = MIMEMultipart("alternative")
     message["Subject"] = "Daily Github Contributions"
     message["From"] = sender_email
