@@ -122,7 +122,7 @@ async def run():
     await session.close()
 
 
-def lambda_handler():
+def lambda_handler(context, event):
     """
     Entrypoint for AWS Lambda
     """
