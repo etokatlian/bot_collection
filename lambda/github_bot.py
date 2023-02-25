@@ -3,9 +3,9 @@ import smtplib
 import ssl
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
-from bs4 import BeautifulSoup
 from datetime import datetime, timedelta
 import asyncio
+from bs4 import BeautifulSoup
 import aiohttp
 from users import urls, name_map
 
@@ -22,16 +22,16 @@ async def gather_with_concurrency(n, *tasks):
 
 async def get_async(url, session, results):
     async with session.get(url) as response:
-        split_url = url.split('/')
+        split_url = url.split("/")
         username = name_map[split_url[len(split_url) - 1]]
         obj = await response.text()
         results[username] = obj
 
 
 def get_contribution_count(github_rectangle):
-    val = github_rectangle[0].get_text().split(' ')[0]
+    val = github_rectangle[0].get_text().split(" ")[0]
 
-    if val == 'No':
+    if val == "No":
         return 0
     else:
         return val
@@ -43,7 +43,9 @@ async def run():
     results = {}
 
     conc_req = 40
-    await gather_with_concurrency(conc_req, *[get_async(i, session, results) for i in urls])
+    await gather_with_concurrency(
+        conc_req, *[get_async(i, session, results) for i in urls]
+    )
 
     output = []
 
@@ -53,7 +55,7 @@ async def run():
 
         # Get yesterday's date in YYYY-MM-DD format
         yesterday = datetime.now() - timedelta(1)
-        yesterdays_date = datetime.strftime(yesterday, '%Y-%m-%d')
+        yesterdays_date = datetime.strftime(yesterday, "%Y-%m-%d")
 
         # Get the github rectangle for yesterday
         yesterday_rect = soup.find_all("rect", {"data-date": yesterdays_date})
@@ -67,12 +69,7 @@ async def run():
     filtered_output = list(filter(lambda x: int(x[1]) > 0, output))
 
     # fire off email via cronjob
-    generated_html = list(
-        map(
-            lambda x: f"<li>{x[0]} - {x[1]}</li>",
-            filtered_output
-        )
-    )
+    generated_html = list(map(lambda x: f"<li>{x[0]} - {x[1]}</li>", filtered_output))
 
     joined = " ".join(generated_html)
 
@@ -85,7 +82,9 @@ async def run():
         </ul>
       </body>
     </html>
-    """.format(generated_html=joined)
+    """.format(
+        generated_html=joined
+    )
 
     # What to show in the email if there are no contributions
     no_results_html = """\
@@ -99,9 +98,9 @@ async def run():
 
     generated_html = MIMEText(html_string, "html")
 
-    sender_email = os.environ['EMAIL']
-    receiver_emails = [os.environ['EMAIL']]
-    password = os.environ['PASSWORD']
+    sender_email = os.environ["EMAIL"]
+    receiver_emails = [os.environ["EMAIL"]]
+    password = os.environ["PASSWORD"]
     message = MIMEMultipart("alternative")
     message["Subject"] = "Daily Github Contributions"
     message["From"] = sender_email
@@ -116,9 +115,7 @@ async def run():
 
     with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=context) as server:
         server.login(sender_email, password)
-        server.sendmail(
-            sender_email, receiver_emails, message.as_string()
-        )
+        server.sendmail(sender_email, receiver_emails, message.as_string())
 
     await session.close()
 
