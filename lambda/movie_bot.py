@@ -1,3 +1,7 @@
+"""
+Fetches the movies playing at the AMC Ahwatukee 24 and sends an email with the movie titles and links to the movies.
+"""
+
 import os
 import smtplib
 import ssl
@@ -5,7 +9,6 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import requests
 from bs4 import BeautifulSoup
-
 
 html = requests.get(
     "https://www.amctheatres.com/movie-theatres/phoenix/amc-ahwatukee-24")
@@ -56,6 +59,9 @@ context = ssl._create_unverified_context()
 
 
 def send_email():
+    """
+    Sends the email
+    """
     with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=context) as server:
         server.login(sender_email, password)
         server.sendmail(

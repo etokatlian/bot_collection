@@ -7,7 +7,7 @@ import * as targets from 'aws-cdk-lib/aws-events-targets';
 interface BotStackProps {
   botName: string;
   botRuleName: string;
-  env: any;
+  env?: any;
   handlerPath: string;
   cron: string;
 }
