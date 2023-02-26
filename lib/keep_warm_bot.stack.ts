@@ -13,6 +13,7 @@ export class KeepWarmStack extends cdk.Stack {
       env: {
         URL: process.env.GGFYIURL,
       },
+      memorySize: 128,
       handlerPath: 'keep_warm_bot.lambda_handler',
       cron: 'cron(0/5 * * * ? *)',
     });

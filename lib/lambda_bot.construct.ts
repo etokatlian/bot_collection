@@ -10,6 +10,7 @@ interface BotStackProps {
   env?: any;
   handlerPath: string;
   cron: string;
+  memorySize?: 128 | 256 | 512 | 1024;
 }
 
 /**
@@ -27,6 +28,7 @@ export class BotConstruct extends Construct {
     const botRuleName = props.botRuleName;
     const cron = props.cron;
     const handlerPath = props.handlerPath;
+    const memorySize = props.memorySize || 256;
 
     this.handler = new lambda.Function(this, botName, {
       code: lambda.Code.fromAsset('lambda', {
@@ -43,7 +45,7 @@ export class BotConstruct extends Construct {
       }),
       runtime: lambda.Runtime.PYTHON_3_9,
       handler: handlerPath,
-      memorySize: 256,
+      memorySize: memorySize,
       timeout: cdk.Duration.seconds(30),
       environment: env,
     });
