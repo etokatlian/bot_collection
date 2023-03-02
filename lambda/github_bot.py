@@ -1,5 +1,6 @@
 import os
 import smtplib
+import time
 import ssl
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
@@ -7,6 +8,7 @@ from datetime import datetime, timedelta
 import asyncio
 from bs4 import BeautifulSoup
 import aiohttp
+import requests
 from users import urls, name_map
 
 
@@ -67,6 +69,17 @@ async def run():
         output.append([item[0], yesterday_contribution_count])
 
     filtered_output = list(filter(lambda x: int(x[1]) > 0, output))
+
+    date = f"{int(time.time())}"
+
+    # this posts to GithubService API, which writes to DynamoDB
+    # TODO: Add url to repo for GithubService
+    for item in filtered_output:
+        requests.post(
+            "https://gdu7m457d3.execute-api.us-west-2.amazonaws.com/prod/checkins",
+            headers={"Content-Type": "application/json"},
+            json={"user": item[0], "date": date, "commits": item[1]},
+        )
 
     # fire off email via cronjob
     generated_html = list(map(lambda x: f"<li>{x[0]} - {x[1]}</li>", filtered_output))
