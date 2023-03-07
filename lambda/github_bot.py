@@ -76,7 +76,7 @@ async def run():
     # TODO: Add url to repo for GithubService
     for item in filtered_output:
         requests.post(
-            "https://gdu7m457d3.execute-api.us-west-2.amazonaws.com/prod/checkins",
+            "https://3g2f4dalyc.execute-api.us-west-2.amazonaws.com/prod/checkins",
             headers={"Content-Type": "application/json"},
             json={"user": item[0], "date": date, "commits": item[1]},
         )
