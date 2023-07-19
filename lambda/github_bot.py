@@ -31,6 +31,10 @@ async def get_async(url, session, results):
 
 
 def get_contribution_count(github_rectangle):
+    # If there are no contributions, return 0
+    if len(github_rectangle) == 0:
+        return 0
+
     val = github_rectangle[0].get_text().split(" ")[0]
 
     if val == "No":
@@ -57,10 +61,11 @@ async def run():
 
         # Get yesterday's date in YYYY-MM-DD format
         yesterday = datetime.now() - timedelta(1)
+        two_days_ago = datetime.now() - timedelta(2)
         yesterdays_date = datetime.strftime(yesterday, "%Y-%m-%d")
 
         # Get the github rectangle for yesterday
-        yesterday_rect = soup.find_all("rect", {"data-date": yesterdays_date})
+        yesterday_rect = soup.find_all("td", {"data-date": yesterdays_date})
 
         # Get the number of contributions from yesterday
         yesterday_contribution_count = get_contribution_count(yesterday_rect)
